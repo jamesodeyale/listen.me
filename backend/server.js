@@ -16,10 +16,10 @@ app.use(express.json());
 app.use("/api/v1/admin", require("./routes/admin"));
 
 // LISTENER ENDPOINTS
-app.use("/api/v1/listener", require("./routes/listener"));
+// app.use("/api/v1/listener", require("./routes/listener"));
 
 // PUBLISHER ENDPOINTS
-app.use("/api/v1/publisher", require("./routes/publisher"));
+// app.use("/api/v1/publisher", require("./routes/publisher"));
 
 app.listen(port, () => {
   console.log(`server is up and listening on port ${port}`);
