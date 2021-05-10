@@ -163,3 +163,7 @@ create table stat (
             on delete cascade
 );
 
+
+select * from account;
+
+delete from account where account_id=1;
