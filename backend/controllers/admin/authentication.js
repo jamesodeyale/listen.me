@@ -1,6 +1,9 @@
 const db = require("../../db");
 
-const { validateRegistration } = require("../../validation/admin");
+const {
+  validateRegistration,
+  validateLogin
+} = require("../../validation/admin");
 
 module.exports = {
   register: async (req, res, next) => {
@@ -50,6 +53,53 @@ module.exports = {
         });
       }
     } catch (error) {
+      res.status(404).json({
+        status: "failed",
+        error: {
+          message: "An error occurred. Please try again!"
+        }
+      });
+    }
+  },
+
+  login: async (req, res, next) => {
+    try {
+      const { errors, isValid } = validateLogin(req.body);
+
+      if (!isValid) {
+        return res.status(400).json(errors);
+      }
+
+      const { email, password } = req.body;
+
+      const userAccount = await db.query(
+        "SELECT account_id, first_name, last_name, email FROM account WHERE email = $1 AND password = $2",
+        [email, password]
+      );
+
+      if (userAccount.rows.length > 0) {
+        const adminAccount = await db.query(
+          "SELECT * FROM admin WHERE account_id = $1",
+          [userAccount.rows[0].account_id]
+        );
+
+        res.status(200).json({
+          status: "success",
+          data: {
+            account: userAccount.rows[0],
+            admin: adminAccount.rows[0]
+          }
+        });
+      } else {
+        res.status(404).json({
+          status: "failed",
+          error: {
+            message: "Wrong email and password combination"
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
       res.status(404).json({
         status: "failed",
         error: {

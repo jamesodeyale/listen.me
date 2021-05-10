@@ -14,5 +14,17 @@ module.exports = {
       errors,
       isValid: isEmpty(errors)
     };
+  },
+
+  validateLogin: (data) => {
+    let errors = {};
+
+    data.email = !isEmpty(data.email) ? data.email : "";
+    data.password = !isEmpty(data.password) ? data.password : "";
+
+    return {
+      errors,
+      isValid: isEmpty(errors)
+    };
   }
 };
