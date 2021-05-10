@@ -166,4 +166,6 @@ create table stat (
 
 select * from account;
 
-delete from account where account_id=1;
+delete from account where account_id=2;
+
+
