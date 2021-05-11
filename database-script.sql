@@ -172,7 +172,7 @@ create table stat (
 
 
 select * from account;
-
+select * from genre;
 delete from account where account_id=4;
 
 

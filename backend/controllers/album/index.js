@@ -1,8 +1,38 @@
 const db = require("../../db");
+const { validateAlbum } = require("../../validation/album");
+const { song } = require("../song");
 
 createAlbum = async (req, res) => {
   try {
-    console.log(req.body);
+    const { errors, isValid } = validateAlbum(req.body);
+
+    if (!isValid) {
+      return res.status(400).json({
+        status: "failed",
+        error: {
+          errors,
+          message: null
+        }
+      });
+    }
+
+    const { name, publisher_id, genre_id } = req.body;
+
+    const { rows } = await db.query(
+      "INSERT INTO album (genre_id, publisher_id, name) values ($1, $2, $3) returning *",
+      [genre_id, publisher_id, name]
+    );
+
+    if (rows.length > 0) {
+      song.uploadSong(req, res);
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        album: rows[0]
+      }
+    });
   } catch (error) {
     res.status(404).json({
       status: "failed",

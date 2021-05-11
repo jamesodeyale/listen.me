@@ -135,8 +135,6 @@ login = async (req, res) => {
         userAccount.rows[0].password
       );
 
-      console.log(passwordIsValid);
-
       if (!passwordIsValid) {
         return res.status(401).json({
           error: {

@@ -1,20 +1,21 @@
 const db = require("../../db");
-const { s3Actions } = require("../../s3");
+const { s3Actions } = require("../../utils/s3");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 const multer = require("multer");
-const upload = multer({ dest: "./uploads/" }).array("song", 24);
+const upload = multer({ dest: "./uploads/" }).array("songs", 24);
 
 uploadSong = async (req, res) => {
   try {
     upload(req, res, () => {
-      const files = req.files;
       try {
-        files.map(async (file) => {
-          const response = await s3Actions.uploadFile(file);
+        const songs = req.files;
+        console.log(songs);
+        songs.map(async (song) => {
+          const response = await s3Actions.uploadFile(song);
           //    delte file after uploading to database and s3
-          await unlinkFile(file.path);
+          // await unlinkFile(file.path);
           console.log(response);
         });
       } catch (error) {
