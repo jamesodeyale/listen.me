@@ -62,6 +62,7 @@ create table album (
     genre_id INT not null,
     publisher_id INT not null,
     name varchar(300) not null,
+    description text,
     datetime DATE NOT NULL DEFAULT CURRENT_DATE,
     constraint album_PK primary key (album_id),
     constraint album_genre_FK
@@ -92,6 +93,8 @@ create table song (
             references publisher(publisher_id)
             on delete cascade
 );
+
+select * from song;
 
 create table playlist
 (
