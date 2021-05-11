@@ -6,7 +6,7 @@ let bcrypt = require("bcryptjs");
 const {
   validateRegistration,
   validateLogin
-} = require("../../validation/publisher");
+} = require("../../validation/listener");
 
 register = async (req, res) => {
   try {
@@ -22,7 +22,8 @@ register = async (req, res) => {
       });
     }
 
-    const { email, first_name, last_name, password, publisher_type } = req.body;
+    const { email, first_name, last_name, password, address, country } =
+      req.body;
 
     const findAccount = await db.query(
       "SELECT * FROM account WHERE email = $1",
@@ -30,12 +31,12 @@ register = async (req, res) => {
     );
 
     if (findAccount.rows.length > 0) {
-      const findPublisher = await db.query(
-        "SELECT * FROM publisher WHERE account_id = $1",
+      const findListener = await db.query(
+        "SELECT * FROM listener WHERE account_id = $1",
         [findAccount.rows[0].account_id]
       );
 
-      if (findPublisher.rows.length > 0) {
+      if (findListener.rows.length > 0) {
         res.status(404).json({
           status: "failed",
           error: {
@@ -45,9 +46,9 @@ register = async (req, res) => {
         });
       } else {
         try {
-          const newPublisher = await db.query(
-            "INSERT INTO publisher (account_id, type_of_publisher) VALUES ($1, $2) RETURNING *",
-            [findAccount.rows[0].account_id, publisher_type]
+          const newListener = await db.query(
+            "INSERT INTO listener (account_id, address, country) VALUES ($1, $2, $3) RETURNING *",
+            [findAccount.rows[0].account_id, address, country]
           );
 
           res.status(200).json({
@@ -59,7 +60,7 @@ register = async (req, res) => {
                 last_name: findAccount.rows[0].last_name,
                 email: findAccount.rows[0].email
               },
-              publisher: newPublisher.rows[0]
+              listener: newListener.rows[0]
             }
           });
         } catch (error) {
@@ -75,9 +76,9 @@ register = async (req, res) => {
           [email, first_name, last_name, hashedPassword]
         );
         console.log(newAccount);
-        const newPublisher = await db.query(
-          "INSERT INTO publisher (account_id, type_of_publisher) VALUES ($1, $2) RETURNING *",
-          [findAccount.rows[0].account_id, publisher_type]
+        const newListener = await db.query(
+          "INSERT INTO listener (account_id, address, country) VALUES ($1, $2, $3) RETURNING *",
+          [findAccount.rows[0].account_id, address, country]
         );
 
         res.status(200).json({
@@ -89,7 +90,7 @@ register = async (req, res) => {
               last_name: newAccount.rows[0].last_name,
               email: newAccount.rows[0].email
             },
-            publisher: newPublisher.rows[0]
+            listener: newListener.rows[0]
           }
         });
       } catch (error) {
@@ -153,8 +154,8 @@ login = async (req, res) => {
         }
       );
 
-      const publisherAccount = await db.query(
-        "SELECT * FROM publisher WHERE account_id = $1",
+      const listenerAccount = await db.query(
+        "SELECT * FROM listener WHERE account_id = $1",
         [userAccount.rows[0].account_id]
       );
 
@@ -167,7 +168,7 @@ login = async (req, res) => {
             last_name: userAccount.rows[0].last_name,
             email: userAccount.rows[0].email
           },
-          publisher: publisherAccount.rows[0],
+          listener: listenerAccount.rows[0],
           accessToken: token
         }
       });

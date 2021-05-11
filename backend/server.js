@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 app.use("/api/v1/admin", require("./routes/admin"));
 
 // LISTENER ENDPOINTS
-// app.use("/api/v1/listener", require("./routes/listener"));
+app.use("/api/v1/listener", require("./routes/listener"));
 
 // PUBLISHER ENDPOINTS
 app.use("/api/v1/publisher", require("./routes/publisher"));
