@@ -51,9 +51,26 @@ editGenre = async (req, res) => {
   }
 };
 
+deleteGenre = async (req, res) => {
+  try {
+    const { genre_id } = req.params;
+    await db.query(`DELETE FROM genre WHERE genre_id=${genre_id}`);
+    res.status(204).json({ status: "success" });
+  } catch (e) {
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
+};
+
 const genre = {
   createGenre,
-  editGenre
+  editGenre,
+  deleteGenre
 };
 
 module.exports = {
