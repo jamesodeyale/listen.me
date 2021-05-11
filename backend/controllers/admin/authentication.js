@@ -13,7 +13,13 @@ register = async (req, res) => {
     const { errors, isValid } = validateRegistration(req.body);
 
     if (!isValid) {
-      return res.status(400).json(errors);
+      return res.status(400).json({
+        status: "failed",
+        error: {
+          errors,
+          message: null
+        }
+      });
     }
 
     const { email, first_name, last_name, password } = req.body;
@@ -51,6 +57,7 @@ register = async (req, res) => {
     res.status(404).json({
       status: "failed",
       error: {
+        errors: null,
         message: "An error occurred. Please try again!"
       }
     });
@@ -62,7 +69,13 @@ login = async (req, res) => {
     const { errors, isValid } = validateLogin(req.body);
 
     if (!isValid) {
-      return res.status(400).json(errors);
+      return res.status(400).json({
+        status: "failed",
+        error: {
+          errors,
+          message: null
+        }
+      });
     }
 
     const { email, password } = req.body;
@@ -81,6 +94,7 @@ login = async (req, res) => {
       if (!passwordIsValid) {
         return res.status(401).json({
           error: {
+            errors: null,
             message: "Invalid Password!",
             accessToken: null
           }
@@ -117,6 +131,7 @@ login = async (req, res) => {
       res.status(404).json({
         status: "failed",
         error: {
+          errors: null,
           message: "Account not found."
         }
       });
@@ -126,6 +141,7 @@ login = async (req, res) => {
     res.status(404).json({
       status: "failed",
       error: {
+        errors: null,
         message: "An error occurred. Please try again!"
       }
     });
