@@ -30,6 +30,9 @@ app.use("/api/v1/listener", require("./routes/listener"));
 // PUBLISHER ENDPOINTS
 app.use("/api/v1/publisher", require("./routes/publisher"));
 
+// GENRE ENDPOINTS
+app.use("/api/v1/genre", require("./routes/genre"));
+
 app.listen(port, () => {
   console.log(`server is up and listening on port ${port}`);
 });

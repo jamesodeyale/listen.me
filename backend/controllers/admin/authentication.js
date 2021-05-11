@@ -31,14 +31,9 @@ register = async (req, res) => {
       [email, first_name, last_name, hashedPassword]
     );
 
-    const findAccount = await db.query(
-      "SELECT * FROM account WHERE email = $1",
-      [email]
-    );
-
     const newAdmin = await db.query(
       "INSERT INTO admin (account_id) VALUES ($1) RETURNING *",
-      [findAccount.rows[0].account_id]
+      [newAccount.rows[0].account_id]
     );
 
     res.status(200).json({

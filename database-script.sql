@@ -54,6 +54,9 @@ create table genre (
     constraint genre_PK primary key (genre_id)
 );
 
+select * from genre;
+
+
 create table album (
     album_id BIGSERIAL NOT NULL,
     genre_id INT not null,
