@@ -1,10 +1,9 @@
 const router = require("express-promise-router")();
-const { checkDuplicateEmail } = require("../../middleware/verifySignUp");
+const { checkDuplicateEmail } = require("../../middleware");
+const { authentication } = require("../../controllers/admin");
 
-const adminController = require("../../controllers/admin/authentication");
+router.route("/register", [checkDuplicateEmail]).post(authentication.register);
 
-router.route("/register", [checkDuplicateEmail]).post(adminController.register);
-
-router.route("/login").get(adminController.login);
+router.route("/login").get(authentication.login);
 
 module.exports = router;

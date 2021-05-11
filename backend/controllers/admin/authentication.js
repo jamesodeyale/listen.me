@@ -1,4 +1,7 @@
 const db = require("../../db");
+const config = require("../../config/auth.config");
+let jwt = require("jsonwebtoken");
+let bcrypt = require("bcryptjs");
 
 const {
   validateRegistration,
@@ -15,9 +18,11 @@ register = async (req, res) => {
 
     const { email, first_name, last_name, password } = req.body;
 
+    const hashedPassword = bcrypt.hashSync(password, 8);
+
     const newAccount = await db.query(
       "INSERT INTO account (email, first_name, last_name, password) VALUES ($1, $2 ,$3 ,$4) RETURNING *",
-      [email, first_name, last_name, password]
+      [email, first_name, last_name, hashedPassword]
     );
 
     const findAccount = await db.query(
@@ -33,7 +38,12 @@ register = async (req, res) => {
     res.status(200).json({
       status: "success",
       data: {
-        account: newAccount.rows[0],
+        account: {
+          account_id: newAccount.rows[0].account_id,
+          first_name: newAccount.rows[0].first_name,
+          last_name: newAccount.rows[0].last_name,
+          email: newAccount.rows[0].email
+        },
         admin: newAdmin.rows[0]
       }
     });
@@ -58,11 +68,33 @@ login = async (req, res) => {
     const { email, password } = req.body;
 
     const userAccount = await db.query(
-      "SELECT account_id, first_name, last_name, email FROM account WHERE email = $1 AND password = $2",
-      [email, password]
+      "SELECT * FROM account WHERE email = $1",
+      [email]
     );
 
     if (userAccount.rows.length > 0) {
+      let passwordIsValid = bcrypt.compareSync(
+        password,
+        userAccount.rows[0].password
+      );
+
+      if (!passwordIsValid) {
+        return res.status(401).json({
+          error: {
+            message: "Invalid Password!",
+            accessToken: null
+          }
+        });
+      }
+
+      let token = jwt.sign(
+        { id: userAccount.rows[0].account_id },
+        config.secret,
+        {
+          expiresIn: 86400
+        }
+      );
+
       const adminAccount = await db.query(
         "SELECT * FROM admin WHERE account_id = $1",
         [userAccount.rows[0].account_id]
@@ -71,15 +103,21 @@ login = async (req, res) => {
       res.status(200).json({
         status: "success",
         data: {
-          account: userAccount.rows[0],
-          admin: adminAccount.rows[0]
+          account: {
+            account_id: userAccount.rows[0].account_id,
+            first_name: userAccount.rows[0].first_name,
+            last_name: userAccount.rows[0].last_name,
+            email: userAccount.rows[0].email
+          },
+          admin: adminAccount.rows[0],
+          accessToken: token
         }
       });
     } else {
       res.status(404).json({
         status: "failed",
         error: {
-          message: "Wrong email and password combination"
+          message: "Account not found."
         }
       });
     }
