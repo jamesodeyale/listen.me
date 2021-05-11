@@ -75,7 +75,7 @@ register = async (req, res) => {
           "INSERT INTO account (email, first_name, last_name, password) VALUES ($1, $2 ,$3 ,$4) RETURNING *",
           [email, first_name, last_name, hashedPassword]
         );
-        console.log(newAccount);
+
         const newListener = await db.query(
           "INSERT INTO listener (account_id, address, country) VALUES ($1, $2, $3) RETURNING *",
           [findAccount.rows[0].account_id, address, country]
