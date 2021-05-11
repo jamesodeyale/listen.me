@@ -4,50 +4,52 @@ const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 const multer = require("multer");
-const upload = multer({ dest: "./uploads/" }).array("songs", 24);
+const upload = multer({ dest: "./uploads/" }).single("song");
 
 uploadSong = async (req, res) => {
   try {
-    const { songs } = req.files;
-    const { album_id, publisher_id } = req.body;
-    console.log(req.body);
-    listOfSongs = [];
-
-    await upload(req, res, () => {
+    const { album_id, publisher_id, name } = req.body;
+    upload(req, res, async () => {
+      const { song } = req.files;
       try {
-        songs.map(async (song) => {
-          const response = await s3Actions.uploadFile(song);
-          //    delete file after uploading to database and s3
-          const songName = song.name.toLowerCase().split(".mp3" || ".jpg")[0];
-          try {
-            const { rows } = await db.query(
-              "INSERT INTO song (album_id, publisher_id, name, link_to_song, filename, length_of_song) values ($1, $2, $3, $4, $5, $6) returning *",
-              [
-                album_id,
-                publisher_id,
-                songName,
-                response.location,
-                response.key,
-                "0:00"
-              ]
-            );
+        const response = await s3Actions.uploadFile(song);
+        //    delte file after uploading to database and s3
+        try {
+          const { rows } = await db.query(
+            "INSERT INTO song (album_id, publisher_id, name, link_to_song, filename, length_of_song) values ($1, $2, $3, $4, $5, $6) returning *",
+            [
+              album_id,
+              publisher_id,
+              name,
+              response.location,
+              response.key,
+              "0:00"
+            ]
+          );
 
-            listOfSongs.push(rows[0]);
-            await unlinkFile(song.path);
-          } catch (error) {
-            console.log(error);
+          if (rows.length > 0) {
+            res.status(200).json({
+              status: "success",
+              data: {
+                song: rows[0]
+              }
+            });
+          } else {
+            res.status(404).json({
+              status: "failed",
+              error: {
+                errors: null,
+                message: "Error occurred. Please try again."
+              }
+            });
           }
-        });
+
+          await unlinkFile(song.path);
+        } catch (error) {
+          console.log(error);
+        }
       } catch (error) {
         console.log(error);
-      }
-    });
-
-    res.status(200).json({
-      status: "success",
-      data: {
-        album: req.body,
-        songs: listOfSongs
       }
     });
   } catch (error) {

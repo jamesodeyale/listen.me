@@ -75,6 +75,8 @@ create table album (
             on delete cascade
 );
 
+select * from album;
+
 create table song (
     song_id BIGSERIAL NOT NULL,
     album_id INT not null,
