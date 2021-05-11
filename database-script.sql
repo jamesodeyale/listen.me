@@ -62,7 +62,7 @@ create table album (
     genre_id INT not null,
     publisher_id INT not null,
     name varchar(300) not null,
-    datetime DATE,
+    datetime DATE NOT NULL DEFAULT CURRENT_DATE,
     constraint album_PK primary key (album_id),
     constraint album_genre_FK
         foreign key (genre_id)
@@ -126,7 +126,7 @@ create table subscription
     subscription_id bigserial    not null,
     publisher_id int          not null,
     listener_id int          not null,
-    datetime date,
+    datetime DATE NOT NULL DEFAULT CURRENT_DATE,
     constraint subscription_PK primary key (subscription_id),
     constraint subscription_publisher_FK
         foreign key (publisher_id)
