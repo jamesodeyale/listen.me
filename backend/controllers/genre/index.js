@@ -67,10 +67,23 @@ deleteGenre = async (req, res) => {
   }
 };
 
+getAllGenres = (req, res) => {
+  try {
+    const { rows } = db.query("select * from genre order by genre_id asc");
+    res.status(200).json({
+      status: "success",
+      data: {
+        genres: rows
+      }
+    });
+  } catch (error) {}
+};
+
 const genre = {
   createGenre,
   editGenre,
-  deleteGenre
+  deleteGenre,
+  getAllGenres
 };
 
 module.exports = {
