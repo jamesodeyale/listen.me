@@ -103,13 +103,109 @@ editSong = async (req, res) => {
 };
 
 getASong = async (req, res) => {
-  const key = req.params.key;
-  const readStream = getFileStream(key);
+  try {
+    const { song_id } = req.params;
+    const { rows } = await db.query(
+      `select * from song where song_id=${song_id}`
+    );
+    res.status(200).json({
+      status: "success",
+      data: {
+        song: rows[0]
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
 
-  readStream.pipe(res);
+  // const key = rows[0].filename;
+  // const readStream = getFileStream(key);
+
+  // readStream.pipe(res);
 };
 
-const song = { uploadSong, getASong, editSong };
+getAllSongsInAlbum = async (req, res) => {
+  try {
+    const { album_id } = req.params;
+    const { rows } = await db.query(
+      `select * from song where album_id=${album_id}`
+    );
+    res.status(200).json({
+      status: "success",
+      data: {
+        songs: rows
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
+};
+
+getAllSongsByPublisher = async (req, res) => {
+  try {
+    const { publisher_id } = req.params;
+    const { rows } = await db.query(
+      `select * from song where publisher_id=${publisher_id}`
+    );
+    res.status(200).json({
+      status: "success",
+      data: {
+        songs: rows
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
+};
+
+deleteSong = async (req, res) => {
+  try {
+    const { song_id } = req.params;
+    await db.query(`DELETE FROM song WHERE song_id=${song_id}`);
+    res.status(200).json({
+      status: "success",
+      data: null
+    });
+  } catch (e) {
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
+};
+
+const song = {
+  uploadSong,
+  getASong,
+  editSong,
+  deleteSong,
+  getAllSongsByPublisher,
+  getAllSongsInAlbum
+};
 
 module.exports = {
   song
