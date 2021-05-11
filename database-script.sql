@@ -32,6 +32,10 @@ create table publisher (
             on delete cascade
 );
 
+select * from publisher;
+
+delete from publisher where publisher_id=1;
+
 create table listener (
     listener_id BIGSERIAL NOT NULL,
     account_id INT NOT NULL ,
