@@ -1,15 +1,15 @@
 create database spotify;
 
-
-
 create table account (
     account_id BIGSERIAL NOT NULL,
     email varchar(100) not null ,
     first_name varchar(100) not null ,
     last_name varchar(100) not null,
-    password varchar(50) not null,
+    password varchar(500) not null,
     constraint account_PK primary key (account_id)
 );
+
+alter table account alter column password type varchar(500);
 
 create table admin (
     admin_id BIGSERIAL NOT NULL,
@@ -166,6 +166,6 @@ create table stat (
 
 select * from account;
 
-delete from account where account_id=2;
+delete from account where account_id=4;
 
 

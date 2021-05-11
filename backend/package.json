@@ -9,7 +9,6 @@
   "author": "James Odeyale, Ralph De Castro",
   "license": "ISC",
   "dependencies": {
-    "Validator": "^1.1.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^9.0.2",
@@ -18,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.7",
-    "pg": "^8.6.0"
+    "pg": "^8.6.0",
+    "validator": "^12.0.0"
   }
 }
