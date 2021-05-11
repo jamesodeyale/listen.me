@@ -1,11 +1,7 @@
 require("dotenv").config();
 const express = require("express");
-const formData = require("express-form-data");
 const morgan = require("morgan");
 const cors = require("cors");
-var multer = require("multer");
-
-var upload = multer({ dest: "./uploads/" });
 const config = require("./config");
 const app = express();
 
@@ -37,6 +33,9 @@ app.use("/api/v1/publisher", require("./routes/publisher"));
 
 // GENRE ENDPOINTS
 app.use("/api/v1/genre", require("./routes/genre"));
+
+// ALBUM ENDPOINTS
+app.use("/api/v1/album", require("./routes/album"));
 
 // SONG ENDPOINTS
 app.use("/api/v1/song", require("./routes/song"));

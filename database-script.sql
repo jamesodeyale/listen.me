@@ -32,7 +32,7 @@ create table publisher (
             on delete cascade
 );
 
-select * from publisher;
+select * from account;
 
 delete from publisher where publisher_id=1;
 

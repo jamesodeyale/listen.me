@@ -1,7 +1,5 @@
 const db = require("../../db");
-const config = require("../../config");
-let jwt = require("jsonwebtoken");
-let bcrypt = require("bcryptjs");
+const { Helper } = require("../../utils/Helper");
 
 const {
   validateRegistration,
@@ -69,7 +67,7 @@ register = async (req, res) => {
       }
     } else {
       try {
-        const hashedPassword = bcrypt.hashSync(password, 8);
+        const hashedPassword = Helper.hashPassword(password);
 
         const newAccount = await db.query(
           "INSERT INTO account (email, first_name, last_name, password) VALUES ($1, $2 ,$3 ,$4) RETURNING *",
@@ -131,7 +129,7 @@ login = async (req, res) => {
     );
 
     if (userAccount.rows.length > 0) {
-      let passwordIsValid = bcrypt.compareSync(
+      const passwordIsValid = Helper.comparePassword(
         password,
         userAccount.rows[0].password
       );
@@ -146,13 +144,7 @@ login = async (req, res) => {
         });
       }
 
-      let token = jwt.sign(
-        { id: userAccount.rows[0].account_id },
-        config.secret,
-        {
-          expiresIn: 86400
-        }
-      );
+      let token = Helper.generateToken(userAccount.rows[0].account_id);
 
       const listenerAccount = await db.query(
         "SELECT * FROM listener WHERE account_id = $1",
