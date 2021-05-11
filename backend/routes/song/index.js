@@ -4,4 +4,6 @@ const { Auth } = require("../../middleware/authJWT");
 
 router.route("/create").post(Auth.verifyToken, song.uploadSong);
 
+router.route("/edit/:song_id").put(Auth.verifyToken, song.editSong);
+
 module.exports = router;

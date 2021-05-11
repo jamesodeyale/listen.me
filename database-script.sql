@@ -98,6 +98,8 @@ create table song (
 
 select * from song;
 
+drop table song;
+
 create table playlist
 (
     playlist_id bigserial    not null,
