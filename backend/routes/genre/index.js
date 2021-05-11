@@ -5,8 +5,10 @@ router.route("/create").post(genre.createGenre);
 
 router.route("/edit/:genre_id").put(genre.editGenre);
 
-router.route("/delete/:genre_id").put(genre.deleteGenre);
+router.route("/delete/:genre_id").delete(genre.deleteGenre);
 
-router.route("/all").post(genre.getAllGenres);
+router.route("/all").get(genre.getAllGenres);
+
+router.route("/single/:genre_id").get(genre.getAGenre);
 
 module.exports = router;

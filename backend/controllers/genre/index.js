@@ -55,7 +55,10 @@ deleteGenre = async (req, res) => {
   try {
     const { genre_id } = req.params;
     await db.query(`DELETE FROM genre WHERE genre_id=${genre_id}`);
-    res.status(204).json({ status: "success" });
+    res.status(200).json({
+      status: "success",
+      data: null
+    });
   } catch (e) {
     res.status(404).json({
       status: "failed",
@@ -67,23 +70,58 @@ deleteGenre = async (req, res) => {
   }
 };
 
-getAllGenres = (req, res) => {
+getAllGenres = async (req, res) => {
   try {
-    const { rows } = db.query("select * from genre order by genre_id asc");
+    const { rows } = await db.query(
+      "select * from genre order by genre_id asc"
+    );
     res.status(200).json({
       status: "success",
       data: {
         genres: rows
       }
     });
-  } catch (error) {}
+  } catch (error) {
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
+};
+
+getAGenre = async (req, res) => {
+  try {
+    const { genre_id } = req.params;
+    const { rows } = await db.query(
+      `select * from genre where genre_id=${genre_id}`
+    );
+    res.status(200).json({
+      status: "success",
+      data: {
+        genres: rows[0]
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
 };
 
 const genre = {
   createGenre,
   editGenre,
   deleteGenre,
-  getAllGenres
+  getAllGenres,
+  getAGenre
 };
 
 module.exports = {
