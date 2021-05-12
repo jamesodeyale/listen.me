@@ -18,4 +18,14 @@ router
   .route("/playlist_for/:listener_id")
   .get(Auth.verifyToken, playlist.getAllPlaylist);
 
+router.route("/add_song").post(Auth.verifyToken, playlist.addSongToPlaylist);
+
+router
+  .route("/remove_song/:playlist_song_id")
+  .delete(Auth.verifyToken, playlist.removeSongOnPlaylist);
+
+router
+  .route("/songs_on_playlist/")
+  .get(Auth.verifyToken, playlist.getAllSongsOnPlaylist);
+
 module.exports = router;

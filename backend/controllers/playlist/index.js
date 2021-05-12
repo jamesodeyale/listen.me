@@ -130,12 +130,103 @@ getAllPlaylist = async (req, res) => {
   }
 };
 
+addSongToPlaylist = async (req, res) => {
+  try {
+    const { playlist_id, song_id } = req.body;
+
+    const { rows } = await db.query(
+      "INSERT INTO playlistSong (playlist_id, song_id) values ($1, $2) returning *",
+      [playlist_id, song_id]
+    );
+
+    if (rows.length > 0) {
+      res.status(200).json({
+        status: "success",
+        data: {
+          playlistSong: rows[0]
+        }
+      });
+    } else {
+      res.status(404).json({
+        status: "failed",
+        error: {
+          errors: null,
+          message: "Error occurred. Please try again."
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
+};
+
+removeSongOnPlaylist = async (req, res) => {
+  try {
+    const { playlist_song_id } = req.params;
+    await db.query(
+      `DELETE FROM playlistSong WHERE playlist_song_id=${playlist_song_id}`
+    );
+    res.status(200).json({
+      status: "success",
+      data: null
+    });
+  } catch (e) {
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
+};
+
+getAllSongsOnPlaylist = async (req, res) => {
+  try {
+    const { playlist_id } = req.body;
+    const { rows } =
+      await db.query(`select ps.playlist_song_id, p.name, p.listener_id, s.song_id, s.album_id, s.name, s.link_to_song, s.filename, a.first_name, a.last_name from playlistSong ps
+    left join playlist p on p.playlist_id = ps.playlist_id
+    left join song s on ps.song_id = s.song_id
+    left join publisher p2 on s.publisher_id = p2.publisher_id
+    left join account a on p2.account_id = a.account_id
+    where ps.playlist_id=${playlist_id}
+    order by ps.playlist_song_id
+`);
+    res.status(200).json({
+      status: "success",
+      data: {
+        songsOnPlaylist: rows
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(404).json({
+      status: "failed",
+      error: {
+        errors: null,
+        message: "Error occurred. Please try again."
+      }
+    });
+  }
+};
+
 const playlist = {
   createPlaylist,
   editPlaylist,
   deletePlaylist,
   getAPlaylist,
-  getAllPlaylist
+  getAllPlaylist,
+  addSongToPlaylist,
+  removeSongOnPlaylist,
+  getAllSongsOnPlaylist
 };
 
 module.exports = {

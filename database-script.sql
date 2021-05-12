@@ -134,6 +134,16 @@ create table playlistSong
             on delete cascade
 );
 
+drop table playlistSong;
+
+select p.name, p.listener_id, s.song_id, s.album_id, s.name, s.link_to_song, s.filename, a.first_name, a.last_name from playlistSong ps
+    left join playlist p on p.playlist_id = ps.playlist_id
+    left join song s on ps.song_id = s.song_id
+    left join publisher p2 on s.publisher_id = p2.publisher_id
+    left join account a on p2.account_id = a.account_id
+where ps.playlist_id=2
+;
+
 create table subscription
 (
     subscription_id bigserial    not null,
