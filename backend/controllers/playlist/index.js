@@ -65,8 +65,8 @@ editPlaylist = async (req, res) => {
 
 deletePlaylist = async (req, res) => {
   try {
-    const { album_id } = req.params;
-    await db.query(`DELETE FROM album WHERE album_id=${album_id}`);
+    const { playlist_id } = req.params;
+    await db.query(`DELETE FROM playlist WHERE playlist_id=${playlist_id}`);
     res.status(200).json({
       status: "success",
       data: null
