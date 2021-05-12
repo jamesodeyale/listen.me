@@ -48,6 +48,9 @@ app.use("/api/v1/song", require("./routes/song"));
 // SEARCH ENDPOINTS
 app.use("/api/v1/search", require("./routes/search"));
 
+// SEARCH ENDPOINTS
+app.use("/api/v1/playlist", require("./routes/playlist"));
+
 app.listen(port, () => {
   console.log(`server is up and listening on port ${port}`);
 });

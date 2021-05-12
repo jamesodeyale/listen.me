@@ -108,11 +108,15 @@ create table playlist
     name        varchar(250) not null,
     listener_id int          not null,
     constraint playlist_PK primary key (playlist_id),
-    constraint album_publisher_FK
+    constraint playlist_listener_FK
         foreign key (listener_id)
             references listener(listener_id)
             on delete cascade
 );
+
+drop table playlist;
+
+select * from listener;
 
 create table playlistSong
 (
