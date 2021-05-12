@@ -108,14 +108,14 @@ getAPlaylist = async (req, res) => {
 
 getAllPlaylist = async (req, res) => {
   try {
-    const { album_id } = req.params;
+    const { listener_id } = req.params;
     const { rows } = await db.query(
-      `select * from album where album_id=${album_id}`
+      `select * from playlist where listener_id=${listener_id}`
     );
     res.status(200).json({
       status: "success",
       data: {
-        album: rows[0]
+        playlists: rows
       }
     });
   } catch (error) {
