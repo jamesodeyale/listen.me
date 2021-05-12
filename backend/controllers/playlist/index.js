@@ -84,14 +84,14 @@ deletePlaylist = async (req, res) => {
 
 getAPlaylist = async (req, res) => {
   try {
-    const { publisher_id } = req.params;
+    const { playlist_id } = req.params;
     const { rows } = await db.query(
-      `select * from album where publisher_id=${publisher_id}`
+      `select * from playlist where playlist_id=${playlist_id}`
     );
     res.status(200).json({
       status: "success",
       data: {
-        albums: rows
+        playlist: rows[0]
       }
     });
   } catch (error) {
