@@ -100,6 +100,8 @@ select * from song;
 
 drop table song;
 
+select * from account where lower(first_name) like '%abc%' or lower(last_name) like '%abc%';
+
 create table playlist
 (
     playlist_id bigserial    not null,

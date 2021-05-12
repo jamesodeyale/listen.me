@@ -106,7 +106,7 @@ getASong = async (req, res) => {
   try {
     const { song_id } = req.params;
     const { rows } = await db.query(
-      `select * from song where song_id=${song_id}`
+      `select * from song where song_id=${song_id} order by song_id desc`
     );
     res.status(200).json({
       status: "success",
@@ -135,7 +135,7 @@ getAllSongsInAlbum = async (req, res) => {
   try {
     const { album_id } = req.params;
     const { rows } = await db.query(
-      `select * from song where album_id=${album_id}`
+      `select * from song where album_id=${album_id} order by song_id`
     );
     res.status(200).json({
       status: "success",
